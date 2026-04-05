@@ -19,7 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private TextInputEditText etEmail, etPassword;
+    private TextInputEditText etUsername, etPassword;
     private DatabaseHelper dbHelper;
     private SessionManager session;
 
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         dbHelper = DatabaseHelper.getInstance(this);
         session = new SessionManager(this);
 
-        etEmail = findViewById(R.id.etLoginEmail);
+        etUsername = findViewById(R.id.etLoginUsername);
         etPassword = findViewById(R.id.etLoginPassword);
         Button btnLogin = findViewById(R.id.btnLogin);
         TextView tvRegister = findViewById(R.id.tvGoToRegister);
@@ -55,15 +55,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String username = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 
-        if (email.isEmpty() || password.isEmpty()) {
+        if (username.isEmpty() || password.isEmpty()) {
             showError(getString(R.string.error_empty_fields));
             return;
         }
 
-        User user = dbHelper.authenticateUser(email, password);
+        if (username.length() < 3) {
+            showError("Username must be at least 3 characters");
+            return;
+        }
+
+        User user = dbHelper.authenticateUser(username, password);
         if (user != null) {
             if ("dormant".equals(user.getStatus())) {
                 showError(getString(R.string.error_user_banned));

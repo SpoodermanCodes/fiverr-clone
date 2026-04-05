@@ -49,7 +49,8 @@ public class CreateGigActivity extends AppCompatActivity {
 
         // Setup category spinner
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item, categories);
+                R.layout.spinner_item, categories);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
         spinnerCategory.setAdapter(spinnerAdapter);
 
         // Back button
@@ -65,13 +66,27 @@ public class CreateGigActivity extends AppCompatActivity {
         String category = spinnerCategory.getSelectedItem().toString();
 
         if (title.isEmpty() || desc.isEmpty() || priceStr.isEmpty()) {
-            showError(getString(R.string.error_gig_fields));
+            showError(getString(R.string.error_empty_fields));
+            return;
+        }
+
+        if (title.length() < 5) {
+            showError("Title must be at least 5 characters long");
+            return;
+        }
+
+        if (desc.length() < 20) {
+            showError("Description must be at least 20 characters long");
             return;
         }
 
         double price;
         try {
             price = Double.parseDouble(priceStr);
+            if (price <= 0 || price > 10000) {
+                showError("Please enter a valid price between $1 and $10,000");
+                return;
+            }
         } catch (NumberFormatException e) {
             showError(getString(R.string.error_gig_fields));
             return;
@@ -89,7 +104,7 @@ public class CreateGigActivity extends AppCompatActivity {
                     Snackbar.make(findViewById(R.id.main), getString(R.string.success_gig_posted),
                                     Snackbar.LENGTH_SHORT)
                             .setBackgroundTint(getColor(R.color.colorPrimary))
-                            .setTextColor(getColor(R.color.colorOnPrimary))
+                            .setTextColor(getColor(R.color.white))
                             .show();
                     findViewById(R.id.main).postDelayed(this::finish, 1000);
                 } else {

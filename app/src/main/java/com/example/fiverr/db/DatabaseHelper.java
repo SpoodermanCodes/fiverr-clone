@@ -123,13 +123,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_USERS, null, values);
     }
 
-    // Authenticate user by email and password
-    public User authenticateUser(String email, String password) {
+    // Authenticate user by username and password
+    public User authenticateUser(String username, String password) {
         SQLiteDatabase db = this.getReadableDatabase();
         String hashedPw = hashPassword(password);
         Cursor cursor = db.query(TABLE_USERS, null,
-                COL_EMAIL + "=? AND " + COL_PASSWORD + "=?",
-                new String[]{email, hashedPw}, null, null, null);
+                COL_USERNAME + "=? AND " + COL_PASSWORD + "=?",
+                new String[]{username, hashedPw}, null, null, null);
 
         User user = null;
         if (cursor != null && cursor.moveToFirst()) {

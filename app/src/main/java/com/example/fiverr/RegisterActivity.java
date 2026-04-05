@@ -74,8 +74,18 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
+        if (username.length() < 4) {
+            showError("Username must be at least 4 characters long");
+            return;
+        }
+
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             showError(getString(R.string.error_invalid_email));
+            return;
+        }
+
+        if (phone.length() < 10) {
+            showError("Please enter a valid 10-digit phone number");
             return;
         }
 
@@ -92,8 +102,8 @@ public class RegisterActivity extends AppCompatActivity {
         int age;
         try {
             age = Integer.parseInt(ageStr);
-            if (age < 13 || age > 120) {
-                showError(getString(R.string.error_invalid_age));
+            if (age < 13 || age > 100) {
+                showError("Please enter a valid age between 13 and 100");
                 return;
             }
         } catch (NumberFormatException e) {
@@ -128,11 +138,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Check duplicates
         if (dbHelper.usernameExists(username)) {
-            showError(getString(R.string.error_username_taken));
+            showError("This username is already take, please choose another");
             return;
         }
         if (dbHelper.emailExists(email)) {
-            showError("Email already registered");
+            showError("This email address is already registered");
             return;
         }
 
@@ -145,7 +155,7 @@ public class RegisterActivity extends AppCompatActivity {
             Snackbar.make(findViewById(R.id.main), getString(R.string.success_registration),
                             Snackbar.LENGTH_LONG)
                     .setBackgroundTint(getColor(R.color.colorPrimary))
-                    .setTextColor(getColor(R.color.colorOnPrimary))
+                    .setTextColor(getColor(R.color.white))
                     .show();
 
             // Go back to welcome after short delay
@@ -154,7 +164,7 @@ public class RegisterActivity extends AppCompatActivity {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
-            }, 1500);
+            }, 1000);
         } else {
             showError(getString(R.string.error_generic));
         }

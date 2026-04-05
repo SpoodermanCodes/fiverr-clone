@@ -36,7 +36,7 @@
             android:layout_marginTop="6dp"
             android:layout_marginBottom="36dp" />
 
-        <!-- Email -->
+        <!-- Username -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,11 +44,11 @@
             style="@style/Fiverr.TextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etLoginEmail"
+                android:id="@+id/etLoginUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/hint_email"
-                android:inputType="textEmailAddress"
+                android:hint="@string/hint_username"
+                android:inputType="text"
                 android:textColor="@color/colorTextPrimary"
                 android:textColorHint="@color/colorHint"
                 android:padding="16dp" />

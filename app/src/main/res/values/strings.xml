@@ -16,7 +16,7 @@
     <string name="btn_sign_in">Sign In</string>
     <string name="link_register">Don\'t have an account? Register</string>
     <string name="link_admin_login">Admin Login</string>
-    <string name="error_invalid_credentials">Invalid email or password</string>
+    <string name="error_invalid_credentials">Invalid username or password</string>
     <string name="error_empty_fields">Please fill in all fields</string>
     <string name="error_user_banned">This account has been deactivated</string>
 
