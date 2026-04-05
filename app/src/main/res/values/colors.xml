@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- SkillLink Premium Dark Green Theme -->
+    <color name="colorPrimary">#00D166</color>
+    <color name="colorPrimaryDark">#00A854</color>
+    <color name="colorAccent">#00E676</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorSurface">#1E1E1E</color>
+    <color name="colorCardBg">#242424</color>
+    <color name="colorOnPrimary">#000000</color>
+    <color name="colorOnSurface">#FFFFFF</color>
+    <color name="colorError">#CF6679</color>
+    <color name="colorTextPrimary">#FFFFFF</color>
+    <color name="colorTextSecondary">#B3B3B3</color>
+    <color name="colorHint">#808080</color>
+    <color name="colorDivider">#2A2A2A</color>
+    <color name="colorInputBg">#1A1A1A</color>
+    <color name="colorInputBorder">#00D166</color>
+    <color name="colorNeonGlow">#3300D166</color>
+    <color name="colorStatusActive">#00E676</color>
+    <color name="colorStatusDormant">#FF5252</color>
+    <color name="colorStatusPending">#FFC107</color>
+    <color name="colorChipBg">#1B3D2A</color>
+    <color name="colorOverlay">#CC000000</color>
+    <color name="colorGradientStart">#121212</color>
+    <color name="colorGradientEnd">#1A2F1A</color>
+</resources>
