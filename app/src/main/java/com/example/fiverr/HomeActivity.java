@@ -1,10 +1,8 @@
 package com.example.fiverr;
 
-import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -17,11 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -57,12 +52,7 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
     private boolean isMusicPlaying = false;
     private boolean showingMyGigs = false;
     private String currentCategory = "All";
-
-    // ★ FIX: Store listener as a field so we can remove it — prevents listener leak crash
     private ValueEventListener gigsListener;
-
-    // Runtime permission launcher for SMS + notifications
-    private ActivityResultLauncher<String[]> permissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,18 +78,10 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
         eqBar3 = findViewById(R.id.eqBar3);
         ImageButton btnProfile = findViewById(R.id.btnProfile);
 
-        // Setup RecyclerView
         adapter = new GigAdapter(this);
         rvGigs.setLayoutManager(new LinearLayoutManager(this));
         rvGigs.setAdapter(adapter);
 
-        // Register permission launcher before any possible request
-        permissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                results -> {} // results handled silently; features degrade gracefully if denied
-        );
-
-        // Search
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -108,67 +90,30 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
             @Override public void afterTextChanged(Editable s) {}
         });
 
-        // Music toggle (manual start — tapping the button)
         btnMusic.setOnClickListener(v -> toggleMusic());
+        btnProfile.setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
 
-        // Profile
-        btnProfile.setOnClickListener(v ->
-                startActivity(new Intent(this, ProfileActivity.class)));
-
-        // Category chips
         setupCategoryChips();
 
-        // Bottom nav
         findViewById(R.id.navExplore).setOnClickListener(v -> {
             showingMyGigs = false;
             applyFilters(etSearch.getText().toString());
         });
-
         findViewById(R.id.navMyGigs).setOnClickListener(v -> {
             showingMyGigs = true;
             applyFilters(etSearch.getText().toString());
         });
-
         findViewById(R.id.navProfile).setOnClickListener(v ->
                 startActivity(new Intent(this, ProfileActivity.class)));
-
         findViewById(R.id.fabCreateGig).setOnClickListener(v ->
                 startActivity(new Intent(this, CreateGigActivity.class)));
-
-        // Request SMS + notification permissions after UI is drawn to avoid ANR
-        rvGigs.post(this::requestRuntimePermissions);
-    }
-
-    private void requestRuntimePermissions() {
-        List<String> needed = new ArrayList<>();
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            needed.add(Manifest.permission.RECEIVE_SMS);
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_SMS)
-                != PackageManager.PERMISSION_GRANTED) {
-            needed.add(Manifest.permission.READ_SMS);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
-                && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-            needed.add(Manifest.permission.POST_NOTIFICATIONS);
-        }
-
-        if (!needed.isEmpty()) {
-            permissionLauncher.launch(needed.toArray(new String[0]));
-        }
     }
 
     private void setupCategoryChips() {
         View.OnClickListener chipListener = v -> {
-            TextView chip = (TextView) v;
-            currentCategory = chip.getText().toString();
-            EditText etSearch = findViewById(R.id.etSearch);
-            applyFilters(etSearch.getText().toString());
+            currentCategory = ((TextView) v).getText().toString();
+            applyFilters(((EditText) findViewById(R.id.etSearch)).getText().toString());
         };
-
         findViewById(R.id.chipAll).setOnClickListener(chipListener);
         findViewById(R.id.chipDesign).setOnClickListener(chipListener);
         findViewById(R.id.chipDev).setOnClickListener(chipListener);
@@ -177,9 +122,6 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
         findViewById(R.id.chipData).setOnClickListener(chipListener);
     }
 
-    // ★ FIX: Attach the Firebase listener in onStart / detach in onStop
-    // This prevents listener accumulation across multiple resume cycles,
-    // which was causing IndexOutOfBoundsException in RecyclerView
     @Override
     protected void onStart() {
         super.onStart();
@@ -194,8 +136,7 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
     }
 
     private void attachGigsListener() {
-        if (gigsListener != null) return; // Already attached
-
+        if (gigsListener != null) return;
         gigsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -207,16 +148,11 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
                         allGigs.add(gig);
                     }
                 }
-                // Apply current filters after data loads
                 EditText etSearch = findViewById(R.id.etSearch);
-                String query = etSearch != null ? etSearch.getText().toString() : "";
-                applyFilters(query);
+                applyFilters(etSearch != null ? etSearch.getText().toString() : "");
             }
-
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Log but don't crash
-            }
+            public void onCancelled(@NonNull DatabaseError error) {}
         };
         gigsRef.addValueEventListener(gigsListener);
     }
@@ -231,31 +167,21 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
     private void applyFilters(String query) {
         filteredGigs.clear();
         String userId = String.valueOf(session.getUserId());
-        String lowerQuery = (query != null) ? query.toLowerCase() : "";
+        String lowerQuery = query != null ? query.toLowerCase() : "";
 
         for (Gig gig : allGigs) {
-            // My Gigs filter
-            if (showingMyGigs) {
-                if (!userId.equals(gig.getPostedByUserId())) continue;
-            }
-
-            // Category filter
-            if (!"All".equals(currentCategory)) {
-                if (gig.getCategory() == null || !gig.getCategory().equals(currentCategory)) continue;
-            }
-
-            // Search filter
+            if (showingMyGigs && !userId.equals(gig.getPostedByUserId())) continue;
+            if (!"All".equals(currentCategory) &&
+                    (gig.getCategory() == null || !gig.getCategory().equals(currentCategory))) continue;
             if (!lowerQuery.isEmpty()) {
                 boolean matches = (gig.getTitle() != null && gig.getTitle().toLowerCase().contains(lowerQuery))
                         || (gig.getDescription() != null && gig.getDescription().toLowerCase().contains(lowerQuery))
                         || (gig.getCategory() != null && gig.getCategory().toLowerCase().contains(lowerQuery));
                 if (!matches) continue;
             }
-
             filteredGigs.add(gig);
         }
 
-        // Use a new list to avoid RecyclerView layout pass conflicts
         adapter.setGigs(new ArrayList<>(filteredGigs));
         tvNoGigs.setVisibility(filteredGigs.isEmpty() ? View.VISIBLE : View.GONE);
     }
@@ -271,7 +197,6 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
             btnMusic.setImageResource(android.R.drawable.ic_media_pause);
             startEqualizer();
         }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent);
         } else {
@@ -282,22 +207,15 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
 
     private void startEqualizer() {
         equalizerView.setVisibility(View.VISIBLE);
-
         ObjectAnimator bar1 = ObjectAnimator.ofFloat(eqBar1, "scaleY", 0.3f, 1f, 0.5f, 1f, 0.3f);
-        bar1.setDuration(900);
-        bar1.setRepeatCount(ObjectAnimator.INFINITE);
+        bar1.setDuration(900); bar1.setRepeatCount(ObjectAnimator.INFINITE);
         bar1.setInterpolator(new AccelerateDecelerateInterpolator());
-
         ObjectAnimator bar2 = ObjectAnimator.ofFloat(eqBar2, "scaleY", 1f, 0.3f, 1f, 0.6f, 1f);
-        bar2.setDuration(700);
-        bar2.setRepeatCount(ObjectAnimator.INFINITE);
+        bar2.setDuration(700); bar2.setRepeatCount(ObjectAnimator.INFINITE);
         bar2.setInterpolator(new AccelerateDecelerateInterpolator());
-
         ObjectAnimator bar3 = ObjectAnimator.ofFloat(eqBar3, "scaleY", 0.5f, 1f, 0.3f, 1f, 0.5f);
-        bar3.setDuration(800);
-        bar3.setRepeatCount(ObjectAnimator.INFINITE);
+        bar3.setDuration(800); bar3.setRepeatCount(ObjectAnimator.INFINITE);
         bar3.setInterpolator(new AccelerateDecelerateInterpolator());
-
         equalizerAnimator = new AnimatorSet();
         equalizerAnimator.playTogether(bar1, bar2, bar3);
         equalizerAnimator.start();
@@ -308,10 +226,10 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
             equalizerAnimator.cancel();
             equalizerAnimator = null;
         }
-        eqBar1.setScaleY(1f);
-        eqBar2.setScaleY(1f);
-        eqBar3.setScaleY(1f);
-        equalizerView.setVisibility(View.INVISIBLE);
+        if (eqBar1 != null) eqBar1.setScaleY(1f);
+        if (eqBar2 != null) eqBar2.setScaleY(1f);
+        if (eqBar3 != null) eqBar3.setScaleY(1f);
+        if (equalizerView != null) equalizerView.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -320,7 +238,4 @@ public class HomeActivity extends AppCompatActivity implements GigAdapter.OnGigC
         intent.putExtra("gigId", gig.getGigId());
         startActivity(intent);
     }
-
-    // ★ FIX: Removed the onResume() override that was calling loadGigs() and
-    // adding duplicate Firebase listeners. The onStart/onStop pair handles this correctly.
 }

@@ -18,8 +18,10 @@ public class SessionManager {
 
     private final SharedPreferences prefs;
     private final SharedPreferences.Editor editor;
+    private final Context context;
 
     public SessionManager(Context context) {
+        this.context = context;
         prefs = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = prefs.edit();
     }
@@ -66,5 +68,16 @@ public class SessionManager {
     public void clearSession() {
         editor.clear();
         editor.apply();
+    }
+
+    public boolean getBoolean(String key, boolean defVal) {
+        // Use a separate prefs file so clearSession() never wipes app-level flags
+        return context.getSharedPreferences("FiverrAppFlags", Context.MODE_PRIVATE)
+                .getBoolean(key, defVal);
+    }
+
+    public void setBoolean(String key, boolean value) {
+        context.getSharedPreferences("FiverrAppFlags", Context.MODE_PRIVATE)
+                .edit().putBoolean(key, value).apply();
     }
 }
