@@ -39,7 +39,7 @@ public class CreateGigActivity extends AppCompatActivity {
         });
 
         session = new SessionManager(this);
-        gigsRef = FirebaseDatabase.getInstance().getReference("gigs");
+        gigsRef = FirebaseDatabase.getInstance("https://fiverr-d61c9-default-rtdb.firebaseio.com").getReference("gigs");
 
         etTitle = findViewById(R.id.etGigTitle);
         etDescription = findViewById(R.id.etGigDescription);

@@ -64,19 +64,28 @@
 
             <Button
                 android:id="@+id/btnToggleStatus"
-                style="@style/Fiverr.Button.Outlined"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/colorPrimary"
                 android:paddingHorizontal="16dp"
-                android:layout_marginEnd="8dp" />
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textColorLink="#FFFFFF"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/btnDeleteUser"
-                style="@style/Fiverr.Button.Outlined"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:paddingHorizontal="16dp"
                 android:text="@string/btn_delete"
-                android:paddingHorizontal="16dp" />
+                android:backgroundTint="@color/colorError"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

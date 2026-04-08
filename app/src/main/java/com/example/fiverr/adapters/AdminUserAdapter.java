@@ -77,6 +77,11 @@ public class AdminUserAdapter extends RecyclerView.Adapter<AdminUserAdapter.Admi
                     isActive ? R.color.colorStatusActive : R.color.colorStatusDormant));
 
             btnToggle.setText(isActive ? "Deactivate" : "Activate");
+            btnToggle.setBackgroundTintList(
+                    android.content.res.ColorStateList.valueOf(
+                            itemView.getContext().getColor(
+                                    isActive ? R.color.colorStatusDormant : R.color.colorStatusActive)));
+            btnToggle.setTextColor(itemView.getContext().getColor(R.color.white));
             btnToggle.setOnClickListener(v -> {
                 if (listener != null) listener.onToggleStatus(user);
             });

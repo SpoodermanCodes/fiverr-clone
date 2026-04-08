@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Base.Theme.Fiverr" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Fiverr" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -14,13 +14,20 @@
         <item name="android:statusBarColor">@color/colorBackground</item>
         <item name="android:navigationBarColor">@color/colorBackground</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="Theme.Fiverr" parent="Base.Theme.Fiverr" />
 
-    <!-- Neon bordered input style -->
-    <style name="Fiverr.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/sl_input_border</item>
+    <style name="Theme.Fiverr.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/colorBackground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Fiverr</item>
+    </style>
+
+    <!-- Bordered input style -->
+    <style name="Fiverr.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorInputBorder</item>
         <item name="boxStrokeWidth">2dp</item>
         <item name="boxStrokeWidthFocused">2.5dp</item>
         <item name="boxCornerRadiusTopStart">12dp</item>
@@ -30,10 +37,11 @@
         <item name="hintTextColor">@color/colorPrimary</item>
         <item name="boxBackgroundColor">@color/colorInputBg</item>
         <item name="android:textColorHint">@color/colorTextSecondary</item>
+        <item name="endIconTint">@color/colorTextSecondary</item>
     </style>
 
     <!-- Primary button style -->
-    <style name="Fiverr.Button" parent="Widget.Material3.Button">
+    <style name="Fiverr.Button" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@color/white</item>
         <item name="backgroundTint">@color/colorPrimary</item>
         <item name="cornerRadius">12dp</item>
@@ -45,7 +53,7 @@
     </style>
 
     <!-- Outlined button style -->
-    <style name="Fiverr.Button.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+    <style name="Fiverr.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="strokeColor">@color/colorPrimary</item>
         <item name="strokeWidth">2dp</item>
         <item name="android:textColor">@color/colorPrimary</item>

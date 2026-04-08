@@ -89,20 +89,28 @@
 
             <Button
                 android:id="@+id/btnEditGig"
-                style="@style/Fiverr.Button.Outlined"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
-                android:text="@string/btn_edit"
+                android:layout_marginEnd="8dp"
                 android:paddingHorizontal="16dp"
-                android:layout_marginEnd="8dp" />
+                android:text="@string/btn_edit"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="13sp" />
 
             <Button
                 android:id="@+id/btnDeleteGig"
-                style="@style/Fiverr.Button.Outlined"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="36dp"
+                android:paddingHorizontal="16dp"
                 android:text="@string/btn_delete"
-                android:paddingHorizontal="16dp" />
+                android:backgroundTint="@color/colorError"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

@@ -39,7 +39,7 @@ public class ManageGigsFragment extends Fragment implements AdminGigAdapter.OnAd
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_manage_gigs, container, false);
 
-        gigsRef = FirebaseDatabase.getInstance().getReference("gigs");
+        gigsRef = FirebaseDatabase.getInstance("https://fiverr-d61c9-default-rtdb.firebaseio.com").getReference("gigs");
         RecyclerView rv = view.findViewById(R.id.rvManageGigs);
         rv.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new AdminGigAdapter(this);
